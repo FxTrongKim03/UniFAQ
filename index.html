@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ Hub - Instant Answers</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="header__nav">
+            <div class="header__inner">
+                <a href="#" class="header__logo">
+                    <i class="fas fa-question-circle"></i>
+                    UniFAQ
+                </a>
+
+                <div class="header__nav-list">
+                    <a href="#goals" class="header__nav-link">Goals</a>
+                    <a href="#features" class="header__nav-link">Features</a>
+                    <a href="#usage" class="header__nav-link">Usage Example</a>
+                    <a href="#" class="header__nav-link header__nav-link--cta">Get Started</a>
+                </div>
+
+                <div class="header__search" role="search" aria-label="Site search">
+                    <div class="header__search-inner">
+                        <input type="search" class="header__search-input" placeholder="Ask any question..." aria-label="Search">
+                        <button class="header__search-btn" aria-label="Search">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <button class="header__mobile-toggle" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main">
+    <!-- Hero Section -->
+    <section class="section section--hero">
+        <div class="section__row section__row--hero">
+            <div class="hero">
+                <div class="hero__content">
+                    <h1 class="hero__title">Find Answers <span class="hero__title--highlight">Instantly</span></h1>
+                    <p class="hero__subtitle">Your university's knowledge hub with AI-powered search and expert answers</p>
+                    <div class="hero__actions">
+                        <button class="hero__btn hero__btn--primary">Try It Now</button>
+                        <button class="hero__btn hero__btn--secondary">Watch Demo</button>
+                    </div>
+                </div>
+                <div class="hero__visual">
+                    <div class="hero__card hero__card--1">
+                        <i class="fas fa-robot"></i>
+                        <h3>AI-Powered</h3>
+                        <p>Smart answers in seconds</p>
+                    </div>
+                    <div class="hero__card hero__card--2">
+                        <i class="fas fa-users"></i>
+                        <h3>Community</h3>
+                        <p>Expert verified answers</p>
+                    </div>
+                    <div class="hero__card hero__card--3">
+                        <i class="fas fa-mobile-alt"></i>
+                        <h3>Mobile Ready</h3>
+                        <p>Access anywhere</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Form + Example Questions SIDE BY SIDE -->
+    <section class="section section--form">
+        <div class="section__row section__row--form">
+            <div class="contact">
+                <div class="contact__content">
+                    <h2 class="contact__title">Get Personalized Help</h2>
+                    <p class="contact__subtitle">Submit your question and get expert response in 24h</p>
+
+                    <div class="contact__examples">
+                        <h3 class="contact__examples-title">Try these popular questions:</h3>
+                        <div class="examples">
+                            <div class="examples__item">
+                                <i class="fas fa-graduation-cap"></i>
+                                <span>What are office hours?</span>
+                            </div>
+                            <div class="examples__item">
+                                <i class="fas fa-key"></i>
+                                <span>Password reset steps?</span>
+                            </div>
+                            <div class="examples__item">
+                                <i class="fas fa-headset"></i>
+                                <span>IT support contacts?</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <form class="contact__form" novalidate>
+                    <div class="contact__group">
+                        <input type="text" class="contact__input" placeholder="Name" required>
+                    </div>
+                    <div class="contact__group">
+                        <input type="tel" class="contact__input" placeholder="Phone" required>
+                    </div>
+                    <div class="contact__group">
+                        <input type="email" class="contact__input" placeholder="Email" required>
+                    </div>
+                    <div class="contact__group">
+                        <textarea class="contact__textarea" placeholder="Your Question" required></textarea>
+                    </div>
+                    <button type="submit" class="contact__btn">
+                        <i class="fas fa-paper-plane"></i>
+                        Send Question
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Goals Section -->
+    <section class="section section--goals" id="goals">
+        <div class="section__row">
+            <div class="section__content">
+                <span class="section__label">Our Mission</span>
+                <h2 class="section__title">Goals</h2>
+                <ul class="section__list">
+                    <li class="section__list-item">
+                        <i class="fas fa-check-circle"></i>
+                        Simplify access to university information for students and staff
+                    </li>
+                    <li class="section__list-item">
+                        <i class="fas fa-check-circle"></i>
+                        Reduce support queries by providing instant, accurate answers
+                    </li>
+                    <li class="section__list-item">
+                        <i class="fas fa-check-circle"></i>
+                        Foster a knowledgeable community through user-contributed FAQs
+                    </li>
+                </ul>
+            </div>
+            <div class="section__media">
+                <div class="media__placeholder">
+                    <i class="fas fa-bullseye"></i>
+                    <p>Goals Illustration</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="section section--features" id="features">
+        <div class="section__row">
+            <div class="section__media">
+                <div class="media__placeholder">
+                    <i class="fas fa-star"></i>
+                    <p>Features Illustration</p>
+                </div>
+            </div>
+            <div class="section__content">
+                <span class="section__label">What We Offer</span>
+                <h2 class="section__title">Features</h2>
+                <ul class="section__list">
+                    <li class="section__list-item section__list-item--highlighted">
+                        <i class="fas fa-robot"></i>
+                        AI-powered search for natural language queries
+                    </li>
+                    <li class="section__list-item">
+                        <i class="fas fa-folder"></i>
+                        Categorized FAQs by topic (admissions, courses, campus life)
+                    </li>
+                    <li class="section__list-item">
+                        <i class="fas fa-edit"></i>
+                        User voting and editing for accuracy
+                    </li>
+                    <li class="section__list-item">
+                        <i class="fas fa-mobile-alt"></i>
+                        Mobile-friendly interface for on-the-go access
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Usage Example Section -->
+    <section class="section section--usage" id="usage">
+        <div class="section__row">
+            <div class="section__content">
+                <span class="section__label">How It Works</span>
+                <h2 class="section__title">Usage Example</h2>
+                <div class="usage">
+                    <div class="usage__step">
+                        <div class="usage__step-number">1</div>
+                        <div class="usage__step-content">
+                            <h3 class="usage__step-title">Ask</h3>
+                            <p>Type: "What are the deadlines for fall admissions?"</p>
+                        </div>
+                    </div>
+                    <div class="usage__step">
+                        <div class="usage__step-number">2</div>
+                        <div class="usage__step-content">
+                            <h3 class="usage__step-title">Get Answer</h3>
+                            <p><strong>Instant:</strong> "Fall admissions deadlines are June 1 for early decision and August 15 for regular"</p>
+                        </div>
+                    </div>
+                    <div class="usage__step">
+                        <div class="usage__step-number">3</div>
+                        <div class="usage__step-content">
+                            <h3 class="usage__step-title">Done!</h3>
+                            <p>Answer with links to official sources in 2 seconds</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="section__media">
+                <div class="media__placeholder">
+                    <i class="fas fa-play-circle" ></i>
+                    <p>Usage Illustration</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer__container">
+            <div class="footer__brand">
+                <a href="#" class="footer__logo">
+                    <i class="fas fa-question-circle"></i>
+                    UniFAQ
+                </a>
+                <p class="footer__description">Your university's knowledge hub with instant answers</p>
+                <div class="footer__social">
+                    <a href="https://www.facebook.com/KimNT011003" target="_blank" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+            <div class="footer__links">
+                <div class="footer__links-group">
+                    <h3>Product</h3>
+                    <a href="#">Features</a>
+                    <a href="#">Pricing</a>
+                    <a href="#">API</a>
+                </div>
+                <div class="footer__links-group">
+                    <h3>Company</h3>
+                    <a href="#">About</a>
+                    <a href="#">Blog</a>
+                    <a href="#">Careers</a>
+                </div>
+                <div class="footer__links-group">
+                    <h3>Support</h3>
+                    <a href="#">Help Center</a>
+                    <a href="#">Contact</a>
+                    <a href="#">Status</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer__bottom">
+            <p class="footer__text">&copy; 2025 FAQ Hub. All rights reserved.</p>
+            <nav class="footer__nav">
+                <a href="#" class="footer__link">Privacy</a>
+                <a href="#" class="footer__link">Terms</a>
+                <a href="#" class="footer__link">Contact</a>
+            </nav>
+        </div>
+    </footer>
+
+    <!-- <script src="script.js"></script> -->
+</body>
+</html>
