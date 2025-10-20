@@ -1,0 +1,18 @@
+{
+  "faqs": [
+    {
+      "id": 1,
+      "question": "What are the office hours?",
+      "answer": "Office hours are Monday-Friday 9AM-5PM.",
+      "category": "general",
+      "votes": 10
+    },
+    {
+      "id": 2, 
+      "question": "How to reset password?",
+      "answer": "Go to Settings > Security > Reset Password.",
+      "category": "technical",
+      "votes": 25
+    }
+  ]
+}

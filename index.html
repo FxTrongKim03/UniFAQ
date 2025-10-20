@@ -219,9 +219,45 @@
                 </div>
             </div>
             <div class="section__media">
-                <div class="media__placeholder">
-                    <i class="fas fa-play-circle" ></i>
-                    <p>Usage Illustration</p>
+            <div class="video-placeholder" id="videoTrigger">
+                <div class="video-thumbnail">
+                    <img src="https://img.youtube.com/vi/YgzY7GKN9Yg/maxresdefault.jpg" alt="Video thumbnail">
+                    <div class="play-button">
+                        <i class="fas fa-play"></i>
+                    </div>
+                </div>
+                <p>Watch how it works</p>
+            </div>
+            <div class="video-modal" id="videoModal">
+                    <div class="modal-content">
+                        <span class="close-modal">&times;</span>
+                        <div class="video-container">
+                            <iframe 
+                                id="youtubeVideo"
+                                src="" 
+                                title="FAQ Hub Demo Video"
+                                frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen>
+                            </iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="section section--faqs" id="faqs">
+        <div class="section__row">
+            <div class="section__content">
+                <span class="section__label">Knowledge Base</span>
+                <h2 class="section__title">Frequently Asked Questions</h2>
+                <div id="faq-container">
+                    <div class="faq-loading">
+                        <div class="loading-spinner"></div>
+                        <p>Loading FAQs...</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -237,7 +273,7 @@
                 </a>
                 <p class="footer__description">Your university's knowledge hub with instant answers</p>
                 <div class="footer__social">
-                    <a href="https://www.facebook.com/KimNT011003" target="_blank" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
                     <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
                     <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
                     <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
@@ -274,6 +310,74 @@
         </div>
     </footer>
 
-    <!-- <script src="script.js"></script> -->
+    <script src="script.js"></script>
+    <script src="faqRenderer.js"></script>
+    <script>
+    // Simple FAQ Loader
+    async function loadFAQs() {
+        const container = document.getElementById('faq-container');
+        
+        try {
+            console.log('🔄 Loading FAQs...');
+            const response = await fetch('./faqs.json');
+            
+            if (!response.ok) throw new Error('Failed to load FAQs');
+            
+            const data = await response.json();
+            console.log('✅ Data loaded:', data);
+            
+            if (!data.faqs || data.faqs.length === 0) {
+                container.innerHTML = `
+                    <div class="faq-empty">
+                        <i class="fas fa-inbox"></i>
+                        <h3>No FAQs Available</h3>
+                        <p>Check back later for frequently asked questions.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Render FAQs
+            container.innerHTML = `
+                <div class="faq-header">
+                    <h2>Frequently Asked Questions</h2>
+                    <p>${data.faqs.length} questions available</p>
+                </div>
+                <div class="faq-list">
+                    ${data.faqs.map(faq => `
+                        <div class="faq-item">
+                            <div class="faq-question">
+                                <h3>${faq.question}</h3>
+                                <span class="faq-votes">${faq.votes} votes</span>
+                            </div>
+                            <div class="faq-answer">
+                                <p>${faq.answer}</p>
+                            </div>
+                            <div class="faq-meta">
+                                <span class="faq-category">${faq.category}</span>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            console.log('✅ FAQs rendered successfully!');
+            
+        } catch (error) {
+            console.error('❌ Error loading FAQs:', error);
+            container.innerHTML = `
+                <div class="faq-error">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>Unable to Load FAQs</h3>
+                    <p>${error.message}</p>
+                    <button class="retry-btn" onclick="loadFAQs()">Try Again</button>
+                </div>
+            `;
+        }
+    }
+
+    // Load FAQs when page is ready
+    document.addEventListener('DOMContentLoaded', loadFAQs);
+    </script>
 </body>
 </html>

@@ -1,4 +1,3 @@
-// script.js
 document.addEventListener('DOMContentLoaded', function() {
     // Mobile menu toggle
     const mobileToggle = document.querySelector('.header__mobile-toggle');
@@ -81,4 +80,33 @@ document.addEventListener('DOMContentLoaded', function() {
             header.style.boxShadow = 'var(--shadow)';
         }
     });
+
+    // Video modal functionality
+    const videoTrigger = document.getElementById('videoTrigger');
+    const videoModal = document.getElementById('videoModal');
+    const closeModal = document.querySelector('.close-modal');
+    const youtubeVideo = document.getElementById('youtubeVideo');
+
+    if (videoTrigger && videoModal) {
+        // Mở modal khi click vào placeholder
+        videoTrigger.addEventListener('click', function() {
+            videoModal.style.display = 'block';
+            // Thêm video ID thực tế của bạn vào đây
+            youtubeVideo.src = "https://www.youtube.com/embed/YgzY7GKN9Yg?autoplay=1";
+        });
+        
+        // Đóng modal
+        closeModal.addEventListener('click', function() {
+            videoModal.style.display = 'none';
+            youtubeVideo.src = ""; // Dừng video khi đóng
+        });
+        
+        // Đóng modal khi click bên ngoài
+        window.addEventListener('click', function(event) {
+            if (event.target === videoModal) {
+                videoModal.style.display = 'none';
+                youtubeVideo.src = ""; // Dừng video khi đóng
+            }
+        });
+    }
 });
