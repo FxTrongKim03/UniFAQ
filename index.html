@@ -309,6 +309,58 @@
             </nav>
         </div>
     </footer>
+    
+    <!-- Chat App Container -->
+    <div id="chat-app-container"></div>
+
+    <!-- Chat Components -->
+    <script src="components/ChatHeader.js"></script>
+    <script src="components/MessageList.js"></script>
+    <script src="components/InputBar.js"></script>
+    <script src="components/ChatApp.js"></script>
+
+    <script>
+        // Global chat functions
+        function openChat() {
+            if (window.chatApp) {
+                window.chatApp.openChat();
+            }
+        }
+
+        function closeChat() {
+            if (window.chatApp) {
+                window.chatApp.closeChat();
+            }
+        }
+
+        function sendToChat(message) {
+            if (window.chatApp) {
+                window.chatApp.sendMessageFromExternal(message);
+            }
+        }
+
+        // Initialize Chat App
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📦 DOM loaded, initializing ChatApp...');
+            
+            const chatContainer = document.getElementById('chat-app-container');
+            if (!chatContainer) {
+                console.error('❌ chat-app-container not found in DOM');
+                return;
+            }
+            
+            const chatApp = new ChatApp('chat-app-container');
+            chatApp.init();
+            window.chatApp = chatApp;
+            
+            console.log('✅ ChatApp initialized successfully');
+            
+            // Make global functions available
+            window.openChat = openChat;
+            window.closeChat = closeChat;
+            window.sendToChat = sendToChat;
+        });
+    </script>
 
     <script src="script.js"></script>
     <script src="faqRenderer.js"></script>

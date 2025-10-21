@@ -1,3 +1,33 @@
+// Kết nối example questions với chat
+function connectExamplesToChat() {
+    const exampleItems = document.querySelectorAll('.examples__item');
+    exampleItems.forEach(item => {
+        item.addEventListener('click', function() {
+            const text = this.querySelector('span').textContent;
+            
+            // Gửi đến chat nếu chat app tồn tại
+            if (window.chatApp) {
+                window.chatApp.sendMessageFromExternal(text);
+            } else {
+                // Fallback: đặt vào search bar
+                document.querySelector('.header__search-input').value = text;
+                document.querySelector('.header__search-input').focus();
+            }
+        });
+    });
+}
+
+// Kết nối hero buttons với chat
+function connectHeroButtonsToChat() {
+    const tryButton = document.querySelector('.hero__btn--primary');
+    if (tryButton) {
+        tryButton.addEventListener('click', function() {
+            if (window.chatApp) {
+                window.chatApp.openChat();
+            }
+        });
+    }
+}
 document.addEventListener('DOMContentLoaded', function() {
     // Mobile menu toggle
     const mobileToggle = document.querySelector('.header__mobile-toggle');
@@ -109,4 +139,11 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    // Kết nối với chat system
+    setTimeout(() => {
+        connectExamplesToChat();
+        connectHeroButtonsToChat();
+    }, 2000); // Đợi chat app khởi tạo
+
 });
