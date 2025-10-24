@@ -14,5 +14,8 @@
     "moduleNameMapping": {
       "\\.(css|less|scss)$": "identity-obj-proxy"
     }
+  },
+  "dependencies": {
+    "sprintf-js": "^1.1.3"
   }
 }

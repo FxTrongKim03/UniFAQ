@@ -258,7 +258,7 @@
                         <div class="loading-spinner"></div>
                         <p>Loading FAQs...</p>
                     </div>
-                </div>
+                </div>  
             </div>
         </div>
     </section>
@@ -364,72 +364,15 @@
 
     <script src="script.js"></script>
     <script src="faqRenderer.js"></script>
+    <script src="hooks/useFaqData.js"></script>
+    <script src="hooks/useFaqSearch.js"></script>
     <script>
-    // Simple FAQ Loader
-    async function loadFAQs() {
-        const container = document.getElementById('faq-container');
-        
-        try {
-            console.log('🔄 Loading FAQs...');
-            const response = await fetch('./faqs.json');
-            
-            if (!response.ok) throw new Error('Failed to load FAQs');
-            
-            const data = await response.json();
-            console.log('✅ Data loaded:', data);
-            
-            if (!data.faqs || data.faqs.length === 0) {
-                container.innerHTML = `
-                    <div class="faq-empty">
-                        <i class="fas fa-inbox"></i>
-                        <h3>No FAQs Available</h3>
-                        <p>Check back later for frequently asked questions.</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            // Render FAQs
-            container.innerHTML = `
-                <div class="faq-header">
-                    <h2>Frequently Asked Questions</h2>
-                    <p>${data.faqs.length} questions available</p>
-                </div>
-                <div class="faq-list">
-                    ${data.faqs.map(faq => `
-                        <div class="faq-item">
-                            <div class="faq-question">
-                                <h3>${faq.question}</h3>
-                                <span class="faq-votes">${faq.votes} votes</span>
-                            </div>
-                            <div class="faq-answer">
-                                <p>${faq.answer}</p>
-                            </div>
-                            <div class="faq-meta">
-                                <span class="faq-category">${faq.category}</span>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-            
-            console.log('✅ FAQs rendered successfully!');
-            
-        } catch (error) {
-            console.error('❌ Error loading FAQs:', error);
-            container.innerHTML = `
-                <div class="faq-error">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <h3>Unable to Load FAQs</h3>
-                    <p>${error.message}</p>
-                    <button class="retry-btn" onclick="loadFAQs()">Try Again</button>
-                </div>
-            `;
-        }
-    }
-
-    // Load FAQs when page is ready
-    document.addEventListener('DOMContentLoaded', loadFAQs);
-    </script>
+    // Sử dụng FAQRenderer mới
+    document.addEventListener('DOMContentLoaded', () => {
+        // Tải FAQs cho phần thân trang
+        const renderer = new FAQRenderer('faq-container'); //
+        renderer.fetchFAQs(); //
+    });
+</script>
 </body>
 </html>

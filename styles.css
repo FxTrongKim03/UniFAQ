@@ -856,26 +856,7 @@ body {
     text-transform: uppercase;
 }
 
-/* Chat Components Styles */
-.chat-app {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 380px;
-    height: 500px;
-    background: var(--white);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow-lg);
-    display: flex;
-    flex-direction: column;
-    z-index: 1000;
-    transition: var(--transition);
-    overflow: hidden;
-}
 
-.chat-app--closed {
-    display: none;
-}
 
 .chat-toggle {
     position: fixed;
@@ -888,17 +869,28 @@ body {
     color: white;
     border: none;
     cursor: pointer;
-    box-shadow: var(--shadow-lg);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 999;
-    transition: var(--transition);
+    transition: transform 0.2s ease-in-out;
 }
 
+.chat-app {
+    /* JavaScript sẽ thêm các thuộc tính position, bottom, right, z-index */
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.chat-app--closed {
+    opacity: 0;
+    transform: translateY(20px);
+    pointer-events: none; /* Quan trọng: Ngăn không cho tương tác khi chat bị ẩn */
+}
+
+/* Hiệu ứng cho nút bấm chat */
 .chat-toggle:hover {
     transform: scale(1.1);
-    box-shadow: 0 8px 25px rgba(75, 108, 183, 0.4);
 }
 
 .chat-toggle i {
@@ -1469,4 +1461,44 @@ body {
     .contact__form {
         padding: 24px;
     }
+}
+
+/* Styles cho FAQ List trong Chat */
+.message--bot .message__faq-list {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.message--bot .message__faq-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--text);
+    transition: var(--transition);
+}
+
+.message--bot .message__faq-item:hover {
+    background: var(--primary);
+    color: var(--white);
+}
+
+.message--bot .message__faq-item i {
+    font-size: 0.9rem;
+    opacity: 0.7;
+}
+
+.message--bot .message__faq-item:hover i {
+    opacity: 1;
+}
+
+.message--bot .message__faq-item span {
+    flex: 1;
+    font-size: 0.85rem;
+    font-weight: 500;
 }
