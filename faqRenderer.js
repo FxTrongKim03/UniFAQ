@@ -13,8 +13,8 @@ class FAQRenderer {
 
     async fetchFAQs() {
         console.log('🔄 Starting FAQ fetch...');
-        this.setLoading(true);
         this.error = null;
+        this.setLoading(true); // Dòng này sẽ tự động gọi render() và hiển thị loading
         
         try {
             console.log('📡 Fetching from: ./faqs.json');
@@ -28,26 +28,29 @@ class FAQRenderer {
             const data = await response.json();
             console.log('✅ Raw data received:', data);
             
-            // VALIDATION QUAN TRỌNG - Kiểm tra cấu trúc data
             if (!data || !data.faqs) {
                 throw new Error('Invalid data structure: missing "faqs" property');
             }
             
-            this.faqs = data.faqs;
-            console.log('📊 FAQs loaded:', this.faqs.length);
+            const sortedFaqs = data.faqs.sort((a, b) => b.votes - a.votes);
+            this.faqs = sortedFaqs.slice(0, 10); 
+
+            console.log(`📊 Đã sắp xếp và lọc top ${this.faqs.length} câu hỏi có vote cao nhất.`);
             
             if (this.faqs.length === 0) {
                 console.log('ℹ️ No FAQs found in data');
             }
             
-            this.render();
+            // KHÔNG render ở đây nữa, hãy để "finally" xử lý
             
         } catch (error) {
             console.error('❌ Fetch failed:', error);
             this.error = error.message;
-            this.renderError();
+            // KHÔNG renderError ở đây nữa
         } finally {
-            this.setLoading(false);
+            // Dòng này sẽ đặt isLoading = false VÀ gọi render() một lần nữa
+            // để hiển thị nội dung hoặc lỗi
+            this.setLoading(false); 
         }
     }
 
@@ -58,6 +61,11 @@ class FAQRenderer {
         } else {
             console.log('🔄 Setting loading state: false');
         }
+        
+        // --- THAY ĐỔI QUAN TRỌNG ---
+        // Gọi render() MỖI KHI trạng thái loading thay đổi
+        this.render();
+        // --- KẾT THÚC THAY ĐỔI ---
     }
 
     render() {
@@ -67,11 +75,15 @@ class FAQRenderer {
             faqsCount: this.faqs.length
         });
 
+        // Khi setLoading(true) gọi render(), nó sẽ vào đây
         if (this.isLoading) {
             console.log('🎨 Rendering LOADING state');
             this.renderLoading();
             return;
         }
+
+        // Khi setLoading(false) gọi render() (lần 2),
+        // isLoading sẽ là false, và nó sẽ tiếp tục xuống đây:
 
         if (this.error) {
             console.log('🎨 Rendering ERROR state:', this.error);
@@ -148,7 +160,7 @@ class FAQRenderer {
         this.container.innerHTML = `
             <div class="faq-header">
                 <h2>Frequently Asked Questions</h2>
-                <p>${this.faqs.length} questions available</p>
+                <p>Top ${this.faqs.length} questions available</p> 
             </div>
             <div class="faq-list">
                 ${faqsHTML}
@@ -160,6 +172,7 @@ class FAQRenderer {
 
     // Helper function to prevent XSS
     escapeHtml(unsafe) {
+        if (!unsafe) return '';
         return unsafe
             .replace(/&/g, "&amp;")
             .replace(/</g, "&lt;")
@@ -171,4 +184,4 @@ class FAQRenderer {
 
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = FAQRenderer;
-}
+}   

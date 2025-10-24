@@ -313,66 +313,58 @@
     <!-- Chat App Container -->
     <div id="chat-app-container"></div>
 
-    <!-- Chat Components -->
+    <script src="hooks/useFaqData.js"></script>
+    <script src="hooks/useFaqSearch.js"></script> 
+
     <script src="components/ChatHeader.js"></script>
     <script src="components/MessageList.js"></script>
     <script src="components/InputBar.js"></script>
     <script src="components/ChatApp.js"></script>
 
+    <script src="script.js"></script>
+    <script src="faqRenderer.js"></script>
+
     <script>
-        // Global chat functions
+        // Hàm Global để các phần khác có thể gọi
         function openChat() {
-            if (window.chatApp) {
-                window.chatApp.openChat();
-            }
+            if (window.chatApp) window.chatApp.openChat();
         }
-
         function closeChat() {
-            if (window.chatApp) {
-                window.chatApp.closeChat();
-            }
+            if (window.chatApp) window.chatApp.closeChat();
         }
-
         function sendToChat(message) {
-            if (window.chatApp) {
-                window.chatApp.sendMessageFromExternal(message);
-            }
+            if (window.chatApp) window.chatApp.sendMessageFromExternal(message);
         }
 
-        // Initialize Chat App
+        // Chạy khi DOM đã sẵn sàng
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('📦 DOM loaded, initializing ChatApp...');
+            console.log('📦 DOM loaded, initializing components...');
             
-            const chatContainer = document.getElementById('chat-app-container');
-            if (!chatContainer) {
+            // 1. Khởi tạo FAQ Renderer cho trang chính
+            const faqContainer = document.getElementById('faq-container');
+            if (faqContainer) {
+                const renderer = new FAQRenderer('faq-container'); 
+                renderer.fetchFAQs(); 
+            } else {
+                console.error('❌ faq-container not found in DOM for main page FAQs');
+            }
+
+            // 2. Khởi tạo Chat App
+            const chatAppContainer = document.getElementById('chat-app-container');
+            if (chatAppContainer) {
+                const chatAppInstance = new ChatApp('chat-app-container');
+                chatAppInstance.init();
+                window.chatApp = chatAppInstance; // Gán vào global để script.js dùng
+                console.log('✅ ChatApp initialized successfully');
+            } else {
                 console.error('❌ chat-app-container not found in DOM');
-                return;
             }
             
-            const chatApp = new ChatApp('chat-app-container');
-            chatApp.init();
-            window.chatApp = chatApp;
-            
-            console.log('✅ ChatApp initialized successfully');
-            
-            // Make global functions available
+            // Make global functions available (đảm bảo chúng có sẵn sau khi chatApp khởi tạo)
             window.openChat = openChat;
             window.closeChat = closeChat;
             window.sendToChat = sendToChat;
         });
     </script>
-
-    <script src="script.js"></script>
-    <script src="faqRenderer.js"></script>
-    <script src="hooks/useFaqData.js"></script>
-    <script src="hooks/useFaqSearch.js"></script>
-    <script>
-    // Sử dụng FAQRenderer mới
-    document.addEventListener('DOMContentLoaded', () => {
-        // Tải FAQs cho phần thân trang
-        const renderer = new FAQRenderer('faq-container'); //
-        renderer.fetchFAQs(); //
-    });
-</script>
 </body>
 </html>

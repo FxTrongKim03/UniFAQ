@@ -1502,3 +1502,64 @@ body {
     font-size: 0.85rem;
     font-weight: 500;
 }
+
+.input-bar {
+    position: relative; /* Cần thiết để định vị suggestion box */
+}
+
+.input-bar__suggestions {
+    display: none; /* Ẩn mặc định */
+    position: absolute;
+    bottom: 100%; /* Hiển thị ngay trên input bar */
+    left: 16px;
+    right: 16px;
+    background: var(--white);
+    border: 1px solid var(--gray);
+    border-bottom: none;
+    border-radius: 12px 12px 0 0; /* Bo tròn góc trên */
+    box-shadow: 0 -5px 15px rgba(0,0,0,0.08);
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1001; /* Phải cao hơn input bar */
+}
+
+.input-bar__suggestion-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: var(--text);
+    border-bottom: 1px solid var(--gray-light);
+}
+
+.input-bar__suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.input-bar__suggestion-item:hover {
+    background: var(--gray-light);
+    color: var(--primary);
+}
+
+.input-bar__suggestion-item i {
+    font-size: 0.9rem;
+    color: var(--primary);
+    opacity: 0.7;
+}
+
+.input-bar__suggestion-item:hover i {
+    opacity: 1;
+}
+
+.input-bar__suggestion-item span {
+    flex: 1;
+    font-weight: 500;
+}
+
+/* Điều chỉnh input bar gốc để không bị che */
+.input-bar__field {
+    position: relative;
+    z-index: 1000; 
+}
