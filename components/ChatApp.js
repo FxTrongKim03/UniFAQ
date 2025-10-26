@@ -211,7 +211,7 @@ class ChatApp {
     async callGeminiAPI(userMessage) {
         this.inputBar.setLoading(true); 
         
-        const MODEL_NAME = 'gemini-2.5-pro'; 
+        const MODEL_NAME = 'gemini-2.5-flash'; 
         const API_VERSION = 'v1beta'; 
         const API_URL = `https://generativelanguage.googleapis.com/${API_VERSION}/models/${MODEL_NAME}:generateContent?key=${this.GEMINI_API_KEY}`;
         
