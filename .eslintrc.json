@@ -1,0 +1,40 @@
+{
+  "env": {
+    "browser": true, // Cho phép globals của trình duyệt (window, document, fetch...)
+    "es2021": true,  // Cho phép cú pháp ES2021
+    "jest": true,    // Cho phép globals của Jest (describe, test, expect...)
+    "node": true     // Cho phép globals của Node (module, require...) - Dùng để tắt lỗi "module is not defined"
+  },
+  "extends": [
+    "eslint:recommended"
+    // Nếu bạn đã cài "eslint-config-standard", bỏ comment dòng dưới:
+    // "standard"
+  ],
+  "parserOptions": {
+    "ecmaVersion": "latest"
+  },
+  "globals": {
+    // Khai báo các lớp bạn tự định nghĩa là biến toàn cục
+    "ChatApp": "readonly",
+    "ChatHeader": "readonly",
+    "MessageList": "readonly",
+    "InputBar": "readonly",
+    "FAQRenderer": "readonly",
+    // Khai báo các "hooks" bạn gắn vào window
+    "useFaqData": "readonly",
+    "useFaqSearch": "readonly"
+  },
+  "rules": {
+    // Tắt quy tắc no-unused-vars cho các hàm global trong index.html
+    "no-unused-vars": ["error", { "varsIgnorePattern": "^(openChat|closeChat|sendToChat)$" }],
+    // Bạn có thể thêm các quy tắc tùy chỉnh khác ở đây
+    "no-undef": "error" // Giữ quy tắc này để bắt các biến chưa khai báo thực sự
+  },
+  "ignorePatterns": [
+    "node_modules/",
+    "coverage/",
+    "server.js",
+    "*.test.js", // Tạm thời ignore file test để tập trung sửa lỗi file chính
+    ".github/"
+  ]
+}
