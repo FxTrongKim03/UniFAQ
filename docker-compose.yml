@@ -1,0 +1,22 @@
+version: '3.8' # Phiên bản Docker Compose
+
+services:
+  # Tên service, bạn có thể đặt tùy ý
+  unifaq-app:
+    # Build image từ Dockerfile trong thư mục hiện tại
+    build: .
+    # Đặt tên container (tùy chọn)
+    container_name: unifaq_app_node
+    # Ánh xạ cổng 8080 trên máy host tới cổng 3000 trong container
+    ports:
+      - "8080:3000"
+    # Cấu hình healthcheck
+    healthcheck:
+      # Lệnh kiểm tra: dùng wget gọi /health trên localhost:3000
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/health"]
+      interval: 15s # Thời gian giữa các lần kiểm tra
+      timeout: 5s   # Thời gian chờ tối đa cho 1 lần kiểm tra
+      retries: 3    # Số lần thử lại nếu thất bại
+      start_period: 10s # Thời gian chờ sau khi container khởi động
+    # Tự khởi động lại nếu container bị dừng (trừ khi dừng thủ công)
+    restart: unless-stopped
