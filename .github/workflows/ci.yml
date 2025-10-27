@@ -58,6 +58,13 @@ jobs:
       - name: Install Newman
         run: npm install -g newman
 
+      # --- BƯỚC MỚI: Sửa URL trong file Collection ---
+      - name: Update Postman Collection URL for CI
+        # Dùng sed để tìm 'http://localhost:8080' và thay bằng 'http://localhost:3000'
+        # cờ -i nghĩa là sửa trực tiếp file (in-place)
+        run: sed -i 's|http://localhost:8080|http://localhost:3000|g' unifaq_tests.postman_collection.json
+      # ----------------------------------------------
+
       - name: Run Postman tests with Newman
-        # Newman sẽ chạy và gọi đến http://localhost:3000
-        run: newman run unifaq_tests.postman_collection.json --reporters cli --global-var "baseUrl=http://localhost:3000"
+        # Bây giờ không cần --global-var nữa vì file đã được sửa
+        run: newman run unifaq_tests.postman_collection.json --reporters cli
