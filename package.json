@@ -1,11 +1,11 @@
 {
   "name": "unifaq",
   "version": "1.0.0",
-  "scripts": {
+ "scripts": {
     "start": "node server.js",
     "lint": "eslint .",
-    "test": "jest",
-    "test:watch": "jest --watch"
+    "test": "npx jest",
+    "test:watch": "npx jest --watch" 
   },
   "devDependencies": {
     "@eslint/js": "^9.38.0",
