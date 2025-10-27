@@ -3,8 +3,32 @@ name: UniFAQ CI Check
 on: [push, pull_request]
 
 jobs:
-  lint_and_test:
+  lint_and_unit_test:
     runs-on: ubuntu-latest
+    steps:
+      # ... (các bước lint và unit test giữ nguyên) ...
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      - name: Run Linter (ESLint)
+        run: npm run lint
+      - name: Run Unit Tests with Coverage (Jest)
+        run: npm test -- --coverage
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+
+  integration_test:
+    runs-on: ubuntu-latest
+    needs: lint_and_unit_test
 
     steps:
       - name: Checkout code
@@ -14,19 +38,26 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 'lts/*'
-          cache: 'npm'
+          cache: 'npm' # Cache npm dependencies cho job này
 
       - name: Install dependencies
-        run: npm ci # Dùng ci để cài đặt chính xác từ lock file
+        run: npm ci # Cài đặt lại dependencies (bao gồm cả production deps cho server)
 
-      - name: Run Linter (ESLint)
-        run: npm run lint # Chạy lệnh lint đã định nghĩa
+      # Khởi động server Node.js ở chế độ nền
+      - name: Start UniFAQ Server in Background
+        run: node server.js & # Dùng '&' để chạy nền
 
-      - name: Run Tests with Coverage (Jest)
-        run: npm test -- --coverage # Chạy test và tạo coverage
+      # Đợi server sẵn sàng bằng cách kiểm tra /health
+      - name: Wait for Server Healthcheck
+        # Dùng curl (có sẵn trên ubuntu-latest) để kiểm tra liên tục trong tối đa 30s
+        run: |
+          echo "Waiting for server..."
+          timeout 30s bash -c 'until curl -sSf http://localhost:3000/health > /dev/null; do echo -n "."; sleep 2; done'
+          echo "Server is up!"
 
-      - name: Upload Coverage Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report
-          path: coverage/ # Upload thư mục coverage
+      - name: Install Newman
+        run: npm install -g newman
+
+      - name: Run Postman tests with Newman
+        # Newman sẽ chạy và gọi đến http://localhost:3000
+        run: newman run unifaq_tests.postman_collection.json --reporters cli
