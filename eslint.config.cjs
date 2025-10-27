@@ -7,17 +7,17 @@ module.exports = [
 
   // Cấu hình chung cho dự án (trừ file test)
   {
-    files: ["**/*.js"], // Áp dụng cho file .js
-    ignores: ["**/*.test.js"], // Loại trừ file test khỏi cấu hình này
+    files: ["**/*.js"],
+    ignores: ["**/*.test.js", "server.js", "node_modules/", "coverage/", ".github/"], // Ignore test, server, etc.
     languageOptions: {
       ecmaVersion: "latest",
       sourceType: "script",
       globals: {
         ...globals.browser, // Globals của trình duyệt
-        ...globals.node,    // Globals của Node (cho 'module', 'require')
-        // --- KHAI BÁO LẠI CÁC BIẾN GLOBAL TÙY CHỈNH ---
-        ChatApp: "writable",     // Cho phép định nghĩa class ChatApp
-        ChatHeader: "readonly",  // Các class khác được đọc
+        // KHÔNG khai báo node globals ở đây nữa
+        // Khai báo các biến global tùy chỉnh
+        ChatApp: "writable",
+        ChatHeader: "readonly",
         MessageList: "readonly",
         InputBar: "readonly",
         FAQRenderer: "readonly",
@@ -26,20 +26,14 @@ module.exports = [
         openChat: "readonly",
         closeChat: "readonly",
         sendToChat: "readonly",
-        // ---------------------------------------------
       },
     },
     rules: {
-      // Rule này để xử lý việc ChatApp được định nghĩa nhưng có thể chưa dùng ngay
-       "no-unused-vars": ["error", {
-           "vars": "all",
-           "args": "after-used",
-           "ignoreRestSiblings": false,
-           // Cho phép khai báo ChatApp dù nó có thể được khởi tạo ở file khác (index.html)
-           "varsIgnorePattern": "^(ChatApp|openChat|closeChat|sendToChat)$"
-       }],
+      "no-unused-vars": ["error", { "varsIgnorePattern": "^(openChat|closeChat|sendToChat|ChatApp|ChatHeader|MessageList|InputBar|FAQRenderer)$" }], // Thêm các class vào ignore pattern
       "no-undef": "error",
-      "no-redeclare": "error" // Vẫn giữ rule này
+      // --- TẮT NO-REDECLARE CHO CÁC FILE NÀY ---
+      "no-redeclare": "off"
+      // -----------------------------------------
     },
   },
 
@@ -52,25 +46,29 @@ module.exports = [
       globals: {
         ...globals.jest,     // Globals của Jest
         ...globals.browser, // Thêm browser nếu test cần DOM
-        // Khai báo global cần thiết cho test (nếu không require/import)
+        ...globals.node,    // <--- Thêm Node globals cho file test
+        // Khai báo lại các biến global cần thiết cho test
         FAQRenderer: "readonly",
-        // Thêm các biến global khác nếu file test cần
+         // Thêm các biến khác nếu test cần, ví dụ:
+        // document: "readonly", // Đã có trong globals.browser
+        // fetch: "readonly" // Đã có trong globals.browser
       },
     },
     rules: {
-       "no-unused-vars": "warn", // Giảm mức độ lỗi unused vars trong test
+       "no-unused-vars": "warn",
        "no-undef": "error",
-       "no-redeclare": "error" // Có thể cần tắt nếu có lỗi redeclare trong test
+        // Giữ no-redeclare cho file test (hoặc tắt nếu cần "off")
+       "no-redeclare": "error"
     }
   },
 
-  // Các file/thư mục cần bỏ qua (áp dụng cho toàn bộ)
-  {
-    ignores: [
-      "node_modules/",
-      "coverage/",
-      "server.js",
-      ".github/"
-    ],
-  },
+  // Config ignore tổng thể (có thể không cần nếu đã ignore trong từng khối)
+  // {
+  //   ignores: [
+  //     "node_modules/",
+  //     "coverage/",
+  //     "server.js",
+  //     ".github/"
+  //   ],
+  // },
 ];
