@@ -1,20 +1,19 @@
 {
   "env": {
-    "browser": true, // Cho phép sử dụng các biến toàn cục của trình duyệt (window, document,...)
-    "es2021": true, // Cho phép cú pháp ES2021
-    "jest": true   // Cho phép sử dụng các biến toàn cục của Jest (describe, test, expect,...)
+    "browser": true,
+    "es2021": true,
+    "jest": true
   },
   "extends": [
-    "eslint:recommended" // Sử dụng bộ quy tắc mặc định, được khuyến nghị của ESLint
-    // Nếu bạn đã cài "eslint-config-standard" khi chạy init lần trước, bạn có thể thêm dòng này:
+    "eslint:recommended"
+    // Nếu bạn đã cài "eslint-config-standard", hãy bỏ dấu // ở dòng dưới:
     // "standard"
   ],
   "parserOptions": {
-    "ecmaVersion": "latest" // Sử dụng phiên bản ECMAScript mới nhất
+    "ecmaVersion": "latest"
   },
   "rules": {
-    // Bạn có thể thêm các quy tắc tùy chỉnh ở đây nếu muốn
-    // Ví dụ: "semi": ["error", "always"] // Luôn yêu cầu dấu chấm phẩy
+    // Thêm quy tắc tùy chỉnh nếu cần
   },
-  "ignorePatterns": ["node_modules/", "coverage/", "server.js", "*.test.js"] // Bỏ qua các thư mục/file này
+  "ignorePatterns": ["node_modules/", "coverage/", "server.js", "*.test.js"]
 }
