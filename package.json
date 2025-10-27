@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "start": "node server.js",
+    "lint": "eslint .",
     "test": "jest",
     "test:watch": "jest --watch"
   },
