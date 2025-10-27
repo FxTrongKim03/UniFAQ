@@ -7,13 +7,14 @@ module.exports = [
 
   // Cấu hình chung cho dự án
   {
-    files: ["**/*.js"], // Chỉ áp dụng cho file .js
+    files: ["**/*.js"], // Áp dụng cho file .js
     languageOptions: {
       ecmaVersion: "latest",
       sourceType: "script",
       globals: {
-        // Chỉ khai báo các biến global DO BẠN TỰ TẠO RA
-        // Các biến của browser, node, jest đã được env xử lý
+        ...globals.browser, // <--- Khai báo globals browser trực tiếp
+        ...globals.node,    // <--- Khai báo globals node trực tiếp
+        // Khai báo các biến global DO BẠN TỰ TẠO RA
         ChatApp: "readonly",
         ChatHeader: "readonly",
         MessageList: "readonly",
@@ -21,23 +22,16 @@ module.exports = [
         FAQRenderer: "readonly",
         useFaqData: "readonly",
         useFaqSearch: "readonly",
-        openChat: "readonly", // Thêm các hàm global vào đây
+        openChat: "readonly",
         closeChat: "readonly",
         sendToChat: "readonly",
       },
     },
-    // Khai báo môi trường để ESLint biết các biến global dựng sẵn
-    env: {
-        browser: true,
-        es2021: true,
-        node: true // Cần cho 'module' trong các file component/hook
-    },
+    // BỎ HOÀN TOÀN KHỐI "env" Ở ĐÂY
     rules: {
-      // Rule này không cần nữa vì đã khai báo globals ở trên
-      // "no-unused-vars": ["error", { "varsIgnorePattern": "^(openChat|closeChat|sendToChat)$" }],
-      "no-undef": "error", // Vẫn giữ để bắt lỗi biến chưa khai báo
-      "no-redeclare": "error" // Giữ rule này
-      // Bạn có thể thêm rules khác nếu cần
+      "no-unused-vars": ["error", { "varsIgnorePattern": "^(openChat|closeChat|sendToChat)$" }], // Có thể cần lại rule này nếu globals không đủ
+      "no-undef": "error",
+      "no-redeclare": "error" // Giữ lại rule này
     },
   },
 
@@ -46,22 +40,16 @@ module.exports = [
     files: ["**/*.test.js"],
     languageOptions: {
       ecmaVersion: "latest",
-      sourceType: "script", // File test cũng là script thường
+      sourceType: "script",
       globals: {
-        // Chỉ cần khai báo thêm globals của Jest ở đây
-         ...globals.jest,
-         // Khai báo thêm các lớp/biến bạn dùng trong test mà chưa import
-         FAQRenderer: "readonly",
+        ...globals.jest,     // <--- Khai báo globals jest trực tiếp
+        ...globals.browser, // Thêm browser nếu test cần DOM
+        FAQRenderer: "readonly",
       },
     },
-     // Khai báo môi trường Jest cho file test
-    env: {
-       jest: true,
-       browser: true // Nếu file test có dùng DOM
-    },
+    // BỎ HOÀN TOÀN KHỐI "env" Ở ĐÂY
     rules: {
-       "no-unused-vars": "warn" // Giảm mức độ lỗi unused vars trong test
-       // Các rule khác nếu cần
+       "no-unused-vars": "warn"
     }
   },
 
