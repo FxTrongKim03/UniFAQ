@@ -1,0 +1,245 @@
+{
+	"info": {
+		"_postman_id": "8804c257-7deb-4738-9796-4d91137309f9",
+		"name": "UniFAQ API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "42072492"
+	},
+	"item": [
+		{
+			"name": "GET List FAQs",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Kiểm tra Status Code là 200\r",
+							"pm.test(\"Status code is 200\", () => { \r",
+							"    pm.response.to.have.status(200); \r",
+							"});\r",
+							"\r",
+							"// Kiểm tra Response Body là một object\r",
+							"pm.test(\"Response body is an object\", () => {\r",
+							"    pm.expect(pm.response.json()).to.be.an('object');\r",
+							"});\r",
+							"\r",
+							"// Kiểm tra Response Body có key 'faqs' và giá trị của nó là một array\r",
+							"pm.test(\"Response has 'faqs' key which is an array\", () => {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('faqs');\r",
+							"    pm.expect(jsonData.faqs).to.be.an('array'); \r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3001/api/faqs",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"api",
+						"faqs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET FAQ by ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => { pm.response.to.have.status(200); });\r",
+							"pm.test(\"Response has correct ID\", () => {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.id).to.eql(\"1\"); // Thay \"1\" bằng ID bạn dùng\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3001/api/faqs/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"api",
+						"faqs",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST Create FAQ",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", () => { pm.response.to.have.status(201); });\r",
+							"pm.test(\"Response has ID\", () => { pm.expect(pm.response.json()).to.have.property('id'); });\r",
+							"pm.test(\"Response has correct question\", () => {\r",
+							"    pm.expect(pm.response.json().question).to.eql(\"How to enroll in courses?\");\r",
+							"});\r",
+							"// Lưu ID mới tạo để dùng cho các request sau\r",
+							"const jsonData = pm.response.json();\r",
+							"if (jsonData && jsonData.id) {\r",
+							"    pm.collectionVariables.set(\"newFaqId\", jsonData.id);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"question\": \"How to enroll in courses?\",\r\n    \"answer\": \"Course enrollment is done via the student portal during the registration period.\",\r\n    \"category\": \"courses\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3001/api/faqs",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"api",
+						"faqs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT Update FAQ",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => { pm.response.to.have.status(200); });\r",
+							"pm.test(\"Response question is updated\", () => {\r",
+							"    pm.expect(pm.response.json().question).to.include(\"UPDATED\");\r",
+							"});\r",
+							"pm.test(\"Response votes is updated\", () => {\r",
+							"    pm.expect(pm.response.json().votes).to.eql(5);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"question\": \"UPDATED: How to enroll in courses?\",\r\n    \"answer\": \"UPDATED: Course enrollment is done via the student portal.\",\r\n    \"category\": \"courses-updated\",\r\n    \"votes\": 5\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3001/api/faqs/{{newFaqId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"api",
+						"faqs",
+						"{{newFaqId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE FAQ",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", () => { pm.response.to.have.status(204); });"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3001/api/faqs/{{newFaqId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"api",
+						"faqs",
+						"{{newFaqId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "newFaqId",
+			"value": ""
+		}
+	]
+}
