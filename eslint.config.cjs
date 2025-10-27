@@ -1,20 +1,19 @@
-const js = require("@eslint/js"); // Sử dụng require
-const globals = require("globals"); // Sử dụng require
+const js = require("@eslint/js");
+const globals = require("globals");
 
-module.exports = [ // Sử dụng module.exports
+module.exports = [
   // Áp dụng cấu hình mặc định được khuyến nghị
   js.configs.recommended,
 
-  // Cấu hình chung
+  // Cấu hình chung cho dự án
   {
-    files: ["**/*.js", "**/*.mjs", "**/*.cjs"], // Áp dụng cho các file JS
+    files: ["**/*.js"], // Chỉ áp dụng cho file .js
     languageOptions: {
       ecmaVersion: "latest",
-      sourceType: "script", // Code là script thông thường
+      sourceType: "script",
       globals: {
-        ...globals.browser, // Globals của trình duyệt
-        ...globals.node,    // Globals của Node (để nhận biết 'module', 'require')
-        // Khai báo các lớp/biến toàn cục của bạn
+        // Chỉ khai báo các biến global DO BẠN TỰ TẠO RA
+        // Các biến của browser, node, jest đã được env xử lý
         ChatApp: "readonly",
         ChatHeader: "readonly",
         MessageList: "readonly",
@@ -22,42 +21,57 @@ module.exports = [ // Sử dụng module.exports
         FAQRenderer: "readonly",
         useFaqData: "readonly",
         useFaqSearch: "readonly",
-        // Khai báo các hàm global trong index.html
-        openChat: "readonly",
+        openChat: "readonly", // Thêm các hàm global vào đây
         closeChat: "readonly",
         sendToChat: "readonly",
       },
     },
+    // Khai báo môi trường để ESLint biết các biến global dựng sẵn
+    env: {
+        browser: true,
+        es2021: true,
+        node: true // Cần cho 'module' trong các file component/hook
+    },
     rules: {
-      "no-unused-vars": ["error", { "varsIgnorePattern": "^(openChat|closeChat|sendToChat)$" }],
-      "no-undef": "error",
+      // Rule này không cần nữa vì đã khai báo globals ở trên
+      // "no-unused-vars": ["error", { "varsIgnorePattern": "^(openChat|closeChat|sendToChat)$" }],
+      "no-undef": "error", // Vẫn giữ để bắt lỗi biến chưa khai báo
+      "no-redeclare": "error" // Giữ rule này
       // Bạn có thể thêm rules khác nếu cần
     },
   },
 
-  // Cấu hình riêng cho file test
+  // Cấu hình riêng cho file test của Jest
   {
     files: ["**/*.test.js"],
     languageOptions: {
+      ecmaVersion: "latest",
+      sourceType: "script", // File test cũng là script thường
       globals: {
-        ...globals.jest,     // Globals của Jest
-        ...globals.browser, // Thêm browser nếu test cần DOM
-        FAQRenderer: "readonly", // Khai báo lớp cần test
+        // Chỉ cần khai báo thêm globals của Jest ở đây
+         ...globals.jest,
+         // Khai báo thêm các lớp/biến bạn dùng trong test mà chưa import
+         FAQRenderer: "readonly",
       },
     },
+     // Khai báo môi trường Jest cho file test
+    env: {
+       jest: true,
+       browser: true // Nếu file test có dùng DOM
+    },
     rules: {
-       "no-unused-vars": "warn", // Giảm mức độ lỗi unused vars trong test
+       "no-unused-vars": "warn" // Giảm mức độ lỗi unused vars trong test
+       // Các rule khác nếu cần
     }
   },
 
-  // Các file/thư mục cần bỏ qua
+  // Các file/thư mục cần bỏ qua (áp dụng cho toàn bộ)
   {
     ignores: [
       "node_modules/",
       "coverage/",
       "server.js",
       ".github/"
-      // Không cần ignore *.test.js nữa vì đã có cấu hình riêng ở trên
     ],
   },
 ];
