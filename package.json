@@ -2,18 +2,31 @@
   "name": "unifaq",
   "version": "1.0.0",
   "scripts": {
+    "start": "node server.js",
+    "lint": "eslint .",
     "test": "jest",
     "test:watch": "jest --watch"
   },
   "devDependencies": {
-    "jest": "^29.7.0",
+    "eslint": "^8.38.0",
     "jest-environment-jsdom": "^29.7.0"
+
   },
   "jest": {
     "testEnvironment": "jsdom",
     "moduleNameMapping": {
       "\\.(css|less|scss)$": "identity-obj-proxy"
-    }
+    },
+    "collectCoverage": true,
+    "coverageDirectory": "coverage",
+    "collectCoverageFrom": [
+      "components/**/*.js",
+      "hooks/**/*.js",
+      "*.js",
+      "!**/*.test.js",
+      "!server.js",
+      "!.eslintrc.js"
+    ]
   },
   "dependencies": {
     "finalhandler": "^1.2.0",
