@@ -28,8 +28,6 @@ jobs:
 
       # Chạy ESLint
       - name: Run Linter (ESLint)
-      env: # <--- Thêm dòng này
-          ESLINT_USE_FLAT_CONFIG: 'false'
         run: npm run lint
 
       # Chạy Jest tests và tạo coverage report
