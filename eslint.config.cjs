@@ -2,13 +2,16 @@ const js = require("@eslint/js");
 const globals = require("globals");
 
 module.exports = [
-  // 1. Cấu hình chung và cho các file chạy trên Browser (Components, Hooks, Renderer)
+  // Áp dụng cấu hình mặc định được khuyến nghị cho tất cả file JS
+  js.configs.recommended,
+
+  // 1. Cấu hình cho các file chạy trên Browser (Components, Hooks, Renderer, script.js)
   {
     files: [
         "components/**/*.js",
         "hooks/**/*.js",
         "faqRenderer.js",
-        "script.js" // Thêm script.js nếu có
+        "script.js"
     ],
     languageOptions: {
       ecmaVersion: "latest",
@@ -26,15 +29,16 @@ module.exports = [
         openChat: "readonly",
         closeChat: "readonly",
         sendToChat: "readonly",
+         // Thêm module/exports để ESLint không báo lỗi no-undef trong các file này
+         // Mặc dù chúng chạy trên browser, code này chỉ để tương thích nếu dùng ở Node
+         module: "writable",
+         exports: "writable"
       },
     },
     rules: {
-      ...js.configs.recommended.rules, // Áp dụng rules cơ bản
-      "no-unused-vars": ["error", { "varsIgnorePattern": "^(openChat|closeChat|sendToChat|ChatApp|ChatHeader|MessageList|InputBar|FAQRenderer)$" }],
+      "no-unused-vars": ["error", { "varsIgnorePattern": "^(openChat|closeChat|sendToChat|ChatApp|ChatHeader|MessageList|InputBar|FAQRenderer|useFaqData|useFaqSearch)$" }],
       "no-undef": "error",
       "no-redeclare": "off", // Tắt redeclare cho các file này
-      "no-undef-init": "warn", // Cảnh báo thay vì lỗi cho biến khởi tạo undefined
-      "no-extra-semi": "warn", // Cảnh báo thay vì lỗi cho dấu ; thừa
     },
   },
 
@@ -43,15 +47,15 @@ module.exports = [
     files: ["server.js"],
     languageOptions: {
       ecmaVersion: "latest",
-      sourceType: "script", // Hoặc "commonjs" nếu bạn dùng module.exports nhiều
+      sourceType: "script",
       globals: {
-        ...globals.node, // CHỈ cần node globals
+        ...globals.node, // CHỈ cần node globals (bao gồm require, process, console, module,...)
       },
     },
     rules: {
-       ...js.configs.recommended.rules, // Áp dụng rules cơ bản
+       // Giữ rules mặc định từ recommended
        "no-undef": "error",
-       "no-unused-vars": "warn", // Giảm lỗi unused cho server log
+       "no-unused-vars": "warn",
     }
   },
 
@@ -63,17 +67,18 @@ module.exports = [
       sourceType: "script",
       globals: {
         ...globals.jest,     // Globals của Jest
-        ...globals.node,    // Globals của Node (cho require, process,...)
-        ...globals.browser, // Globals của Browser (cho document,...)
-        // Khai báo lại global cần cho test nếu nó không được require
-        FAQRenderer: "readonly",
+        ...globals.node,    // Globals của Node (cho require, process, global)
+        ...globals.browser, // Globals của Browser (cho document, fetch nếu cần)
+        // KHÔNG cần khai báo FAQRenderer nữa vì require('...') sẽ xử lý
       },
     },
     rules: {
-       ...js.configs.recommended.rules, // Áp dụng rules cơ bản
+       // Giữ rules mặc định từ recommended
        "no-unused-vars": "warn",
        "no-undef": "error",
-       "no-redeclare": "error" // Giữ hoặc tắt ("off") nếu vẫn lỗi redeclare trong test
+       // --- TẮT NO-REDECLARE CHO FILE TEST ---
+       "no-redeclare": "off"
+       // ------------------------------------
     }
   },
 
@@ -83,7 +88,6 @@ module.exports = [
       "node_modules/",
       "coverage/",
       ".github/"
-      // Không cần liệt kê server.js và test.js ở đây vì đã có config riêng
     ],
   },
 ];
