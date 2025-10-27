@@ -37,12 +37,10 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/health",
-					"protocol": "http",
+					"raw": "{{baseUrl}}/health",
 					"host": [
-						"localhost"
+						"{{baseUrl}}"
 					],
-					"port": "8080",
 					"path": [
 						"health"
 					]
@@ -81,15 +79,45 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080",
-					"protocol": "http",
+					"raw": "{{baseUrl}}/",
 					"host": [
-						"localhost"
+						"{{baseUrl}}"
 					],
-					"port": "8080"
+					"path": [
+						""
+					]
 				}
 			},
 			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
 		}
 	]
 }

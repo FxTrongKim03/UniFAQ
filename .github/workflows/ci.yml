@@ -60,4 +60,4 @@ jobs:
 
       - name: Run Postman tests with Newman
         # Newman sẽ chạy và gọi đến http://localhost:3000
-        run: newman run unifaq_tests.postman_collection.json --reporters cli
+        run: newman run unifaq_tests.postman_collection.json --reporters cli --global-var "baseUrl=http://localhost:3000"
