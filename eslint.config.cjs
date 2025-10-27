@@ -12,26 +12,16 @@ module.exports = [
       ecmaVersion: "latest",
       sourceType: "script",
       globals: {
-        ...globals.browser, // <--- Khai báo globals browser trực tiếp
-        ...globals.node,    // <--- Khai báo globals node trực tiếp
-        // Khai báo các biến global DO BẠN TỰ TẠO RA
-        ChatApp: "readonly",
-        ChatHeader: "readonly",
-        MessageList: "readonly",
-        InputBar: "readonly",
-        FAQRenderer: "readonly",
-        useFaqData: "readonly",
-        useFaqSearch: "readonly",
-        openChat: "readonly",
-        closeChat: "readonly",
-        sendToChat: "readonly",
+        ...globals.browser, // Globals của trình duyệt
+        ...globals.node,    // Globals của Node (cho 'module', 'require')
+        // --- KHÔNG KHAI BÁO ChatApp, ChatHeader,... Ở ĐÂY NỮA ---
       },
     },
-    // BỎ HOÀN TOÀN KHỐI "env" Ở ĐÂY
     rules: {
-      "no-unused-vars": ["error", { "varsIgnorePattern": "^(openChat|closeChat|sendToChat)$" }], // Có thể cần lại rule này nếu globals không đủ
+      // Rule này vẫn cần thiết cho các hàm gọi từ HTML
+      "no-unused-vars": ["error", { "varsIgnorePattern": "^(openChat|closeChat|sendToChat)$" }],
       "no-undef": "error",
-      "no-redeclare": "error" // Giữ lại rule này
+      "no-redeclare": "error" // Vẫn giữ rule này trước
     },
   },
 
@@ -42,18 +32,21 @@ module.exports = [
       ecmaVersion: "latest",
       sourceType: "script",
       globals: {
-        ...globals.jest,     // <--- Khai báo globals jest trực tiếp
+        ...globals.jest,     // Globals của Jest
         ...globals.browser, // Thêm browser nếu test cần DOM
-        FAQRenderer: "readonly",
+         // --- KHÔNG KHAI BÁO FAQRenderer Ở ĐÂY NỮA (trừ khi nó chỉ tồn tại toàn cục trong test) ---
+         // Nếu FAQRenderer được require/import trong file test thì không cần khai báo ở đây.
+         // Nếu nó được load qua <script> thì mới cần, nhưng có thể bị redeclare.
       },
     },
-    // BỎ HOÀN TOÀN KHỐI "env" Ở ĐÂY
     rules: {
-       "no-unused-vars": "warn"
+       "no-unused-vars": "warn",
+       "no-undef": "error",
+       "no-redeclare": "error" // Vẫn giữ rule này trước
     }
   },
 
-  // Các file/thư mục cần bỏ qua (áp dụng cho toàn bộ)
+  // Các file/thư mục cần bỏ qua
   {
     ignores: [
       "node_modules/",
