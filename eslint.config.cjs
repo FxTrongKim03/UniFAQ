@@ -2,73 +2,99 @@ const js = require("@eslint/js");
 const globals = require("globals");
 
 module.exports = [
-  // Áp dụng cấu hình mặc định được khuyến nghị
+  // 1. Global Ignores (apply first)
+  {
+    ignores: [
+      "node_modules/",
+      "coverage/",
+      ".github/",
+      "backend/node_modules/" // Ignore backend node_modules too
+    ],
+  },
+
+  // 2. Base Recommended Rules (apply to all matched files after ignores)
   js.configs.recommended,
 
-  // 1. Cấu hình chung cho dự án (trừ server.js)
+  // 3. Configuration for Browser JS files (Components, Hooks, Renderer, script.js)
   {
-    files: ["**/*.js"], // Áp dụng cho tất cả file JS ban đầu
-    ignores: ["server.js", "node_modules/", "coverage/", ".github/"], // Bỏ qua server và các thư mục khác
+    files: [
+        "components/**/*.js",
+        "hooks/**/*.js",
+        "faqRenderer.js",
+        "script.js"
+    ],
     languageOptions: {
       ecmaVersion: "latest",
       sourceType: "script",
       globals: {
-        ...globals.browser, // Globals của trình duyệt là chính
-        ...globals.jest,    // Thêm Jest globals (áp dụng cả file test)
-        // Khai báo các biến global tùy chỉnh
-        ChatContainer: "writable", // Cho phép định nghĩa/ghi đè
+        ...globals.browser, // Browser built-ins are primary
+        // Declare custom global classes/objects explicitly
+        ChatContainer: "writable",
         ChatPresenter: "writable",
-        ChatHeader: "writable", // Đặt hết là writable để tránh lỗi unused/redeclare phức tạp
-        MessageList: "writable",
-        InputBar: "writable",
-        FAQRenderer: "writable",
-        useFaqData: "readonly", // Hooks có thể là readonly
+        ChatHeader: "readonly",
+        MessageList: "readonly",
+        InputBar: "readonly",
+        FAQRenderer: "readonly",
+        useFaqData: "readonly",
         useFaqSearch: "readonly",
         openChat: "readonly",
         closeChat: "readonly",
         sendToChat: "readonly",
-        // Thêm Node globals cần thiết (chủ yếu cho test và module check)
-        require: "readonly",
-        process: "readonly",
+        // Add module/exports for the checks at the bottom of these files
         module: "writable",
-        exports: "writable",
-        global: "readonly", // Cho file test
+        exports: "writable"
       },
     },
     rules: {
-      // --- TẮT CÁC RULE GÂY LỖI ---
-      "no-redeclare": "off", // Tắt hoàn toàn lỗi định nghĩa lại biến global
-      "no-undef": ["error", { "typeof": true }], // Vẫn bắt lỗi undef, nhưng cho phép typeof kiểm tra biến chưa khai báo
-      // --- SỬA RULE UNUSED VARS ---
-      "no-unused-vars": ["warn", { // Giảm xuống warning và cấu hình lại
+      // Allow specific unused vars (the globally defined classes/functions)
+      "no-unused-vars": ["warn", { // Changed to warn
           "vars": "all",
-          "args": "none", // Không kiểm tra tham số không dùng
+          "args": "none",
           "ignoreRestSiblings": true,
-          // Bỏ varsIgnorePattern vì no-redeclare đã tắt
+          "varsIgnorePattern": "^(ChatContainer|ChatPresenter|ChatHeader|MessageList|InputBar|FAQRenderer|useFaqData|useFaqSearch|openChat|closeChat|sendToChat)$"
       }],
-      // Có thể thêm các rules khác nếu muốn giữ lại
-      "no-extra-semi": "warn",
+      "no-undef": "error",
+      "no-redeclare": "off", // Turn off redeclare for these browser global classes
     },
   },
 
-  // 2. Cấu hình RIÊNG cho file server.js (Node.js)
-  // Cấu hình này sẽ ghi đè globals/rules cho riêng file server.js
+  // 4. Configuration for Node.js server file
   {
-    files: ["server.js"],
+    files: ["server.js", "backend/server.js"], // Apply to server files
     languageOptions: {
       ecmaVersion: "latest",
-      sourceType: "script", // Hoặc "commonjs"
+      sourceType: "script", // Or "commonjs"
       globals: {
-        ...globals.node, // CHỈ cần node globals
+        ...globals.node, // Node.js built-ins ONLY
       },
     },
     rules: {
-       // Giữ rules mặc định từ recommended cho file này
-       "no-undef": "error",
+       // Inherits recommended rules, add specifics if needed
        "no-unused-vars": "warn",
-       "no-redeclare": "error" // Bật lại redeclare cho server
+       "no-undef": "error",
+       "no-redeclare": "error" // Keep redeclare ON for server
     }
   },
 
-  // Không cần cấu hình riêng cho test nữa vì globals đã bao gồm jest/node/browser
+  // 5. Configuration for Jest test files
+  {
+    files: ["**/*.test.js"],
+    languageOptions: {
+      ecmaVersion: "latest",
+      sourceType: "script",
+      globals: {
+        ...globals.jest,     // Jest globals
+        ...globals.node,    // Node globals (for require, process, etc.)
+        ...globals.browser, // Browser globals (for document, etc. if needed)
+        // Declare globals defined in OTHER files but used in tests
+        FAQRenderer: "readonly",
+      },
+    },
+    rules: {
+       // Inherits recommended rules
+       "no-unused-vars": "warn",
+       "no-undef": "error",
+       "no-redeclare": "off", // Turn OFF redeclare also for tests involving global classes
+    }
+  },
 ];
