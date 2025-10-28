@@ -319,7 +319,7 @@
     <script src="components/ChatHeader.js"></script>
     <script src="components/MessageList.js"></script>
     <script src="components/InputBar.js"></script>
-    <script src="components/ChatApp.js"></script>
+    <script src="components/ChatPresenter.js"></script> <script src="components/ChatContainer.js"></script> <script src="script.js"></script>
 
     <script src="script.js"></script>
     <script src="faqRenderer.js"></script>
@@ -350,14 +350,14 @@
             }
 
             // 2. Khởi tạo Chat App
-            const chatAppContainer = document.getElementById('chat-app-container');
-            if (chatAppContainer) {
-                const chatAppInstance = new ChatApp('chat-app-container');
-                chatAppInstance.init();
-                window.chatApp = chatAppInstance; // Gán vào global để script.js dùng
-                console.log('✅ ChatApp initialized successfully');
+            const chatAppContainerElement = document.getElementById('chat-app-container');
+            if (chatAppContainerElement) {
+                const chatContainerInstance = new ChatContainer('chat-app-container');
+                chatContainerInstance.init();
+                window.chatAppContainerInstance = chatContainerInstance; // Gán vào global
+                console.log('✅ ChatContainer initialized successfully');
             } else {
-                console.error('❌ chat-app-container not found in DOM');
+                console.error('❌ chat-app-container element not found');
             }
             
             // Make global functions available (đảm bảo chúng có sẵn sau khi chatApp khởi tạo)

@@ -15,7 +15,7 @@
   },
   "jest": {
     "testEnvironment": "jsdom",
-    "moduleNameMapping": {
+    "moduleNameMapper": {
       "\\.(css|less|scss)$": "identity-obj-proxy"
     },
     "collectCoverage": true,

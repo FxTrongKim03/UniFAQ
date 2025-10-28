@@ -5,34 +5,28 @@ let faqsCache = null;
 let fetchPromise = null;
 
 async function loadFaqs() {
-    if (faqsCache) {
-        return faqsCache;
-    }
-    if (fetchPromise) {
-        return fetchPromise;
-    }
+    if (faqsCache) return faqsCache;
+    if (fetchPromise) return fetchPromise;
 
-    console.log('🔄 Fetching faqs.json...');
-    fetchPromise = fetch('./faqs.json') //
+    console.log('🔄 [useFaqData] Fetching FAQs from API...');
+    const apiUrl = 'http://localhost:3001/api/faqs'; // URL backend
+
+    fetchPromise = fetch(apiUrl)
         .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
+            if (!response.ok) throw new Error(`API Error! Status: ${response.status}`);
             return response.json();
         })
         .then(data => {
-            if (!data || !data.faqs) { //
-                throw new Error('Invalid data structure: missing "faqs" property'); //
-            }
-            faqsCache = data.faqs; //
-            console.log('✅ FAQs loaded and cached:', faqsCache.length);
+            if (!Array.isArray(data)) throw new Error('API did not return an array');
+            faqsCache = data;
+            console.log(`✅ [useFaqData] FAQs loaded from API: ${faqsCache.length}`);
             fetchPromise = null;
             return faqsCache;
         })
         .catch(error => {
-            console.error('❌ Fetch failed:', error);
+            console.error('❌ [useFaqData] Fetch API failed:', error);
             fetchPromise = null;
-            return []; // Trả về mảng rỗng khi lỗi
+            return [];
         });
     return fetchPromise;
 }

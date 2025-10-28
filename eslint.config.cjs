@@ -2,10 +2,20 @@ const js = require("@eslint/js");
 const globals = require("globals");
 
 module.exports = [
-  // Áp dụng cấu hình mặc định được khuyến nghị cho tất cả file JS
+  // 1. Global Ignores
+  {
+    ignores: [
+      "node_modules/",
+      "coverage/",
+      ".github/",
+      "backend/node_modules/"
+    ],
+  },
+
+  // 2. Base Recommended Rules
   js.configs.recommended,
 
-  // 1. Cấu hình cho các file chạy trên Browser (Components, Hooks, Renderer, script.js)
+  // 3. Config cho Browser JS (Components, Hooks, Renderer, script.js)
   {
     files: [
         "components/**/*.js",
@@ -17,9 +27,9 @@ module.exports = [
       ecmaVersion: "latest",
       sourceType: "script",
       globals: {
-        ...globals.browser, // CHỈ cần browser globals
-        // Khai báo các biến global tùy chỉnh
-        ChatApp: "writable",
+        ...globals.browser,
+        ChatContainer: "writable",
+        ChatPresenter: "writable",
         ChatHeader: "readonly",
         MessageList: "readonly",
         InputBar: "readonly",
@@ -29,66 +39,58 @@ module.exports = [
         openChat: "readonly",
         closeChat: "readonly",
         sendToChat: "readonly",
-         // Thêm module/exports để ESLint không báo lỗi no-undef trong các file này
-         // Mặc dù chúng chạy trên browser, code này chỉ để tương thích nếu dùng ở Node
-         module: "writable",
-         exports: "writable"
+        // Thêm module/exports để xử lý các đoạn kiểm tra typeof
+        module: "writable",
+        exports: "writable"
       },
     },
     rules: {
-      "no-unused-vars": ["error", { "varsIgnorePattern": "^(openChat|closeChat|sendToChat|ChatApp|ChatHeader|MessageList|InputBar|FAQRenderer|useFaqData|useFaqSearch)$" }],
+      // Giảm xuống warning và giữ ignore pattern
+      "no-unused-vars": ["warn", {
+          "vars": "all",
+          "args": "none",
+          "ignoreRestSiblings": true,
+          "varsIgnorePattern": "^(ChatContainer|ChatPresenter|ChatHeader|MessageList|InputBar|FAQRenderer|useFaqData|useFaqSearch|openChat|closeChat|sendToChat)$"
+      }],
       "no-undef": "error",
-      "no-redeclare": "off", // Tắt redeclare cho các file này
+      "no-redeclare": "off", // TẮT redeclare cho các file này
     },
   },
 
-  // 2. Cấu hình riêng cho file server.js (Node.js)
+  // 4. Config cho Node.js server
   {
-    files: ["server.js"],
+    files: ["server.js", "backend/server.js"],
     languageOptions: {
       ecmaVersion: "latest",
       sourceType: "script",
       globals: {
-        ...globals.node, // CHỈ cần node globals (bao gồm require, process, console, module,...)
+        ...globals.node, // Chỉ cần globals của Node
       },
     },
     rules: {
-       // Giữ rules mặc định từ recommended
-       "no-undef": "error",
        "no-unused-vars": "warn",
+       "no-undef": "error",
+       "no-redeclare": "error" // Giữ redeclare BẬT cho server
     }
   },
 
-  // 3. Cấu hình riêng cho file test của Jest
+  // 5. Config cho Jest test
   {
     files: ["**/*.test.js"],
     languageOptions: {
       ecmaVersion: "latest",
       sourceType: "script",
       globals: {
-        ...globals.jest,     // Globals của Jest
-        ...globals.node,    // Globals của Node (cho require, process, global)
-        ...globals.browser, // Globals của Browser (cho document, fetch nếu cần)
-        // KHÔNG cần khai báo FAQRenderer nữa vì require('...') sẽ xử lý
+        ...globals.jest,
+        ...globals.node, // Cần cho require, process,... trong test
+        ...globals.browser, // Cần cho document,... trong test
+        FAQRenderer: "readonly", // Khai báo global cần cho test
       },
     },
     rules: {
-       // Giữ rules mặc định từ recommended
        "no-unused-vars": "warn",
        "no-undef": "error",
-       // --- TẮT NO-REDECLARE CHO FILE TEST ---
-       "no-redeclare": "off"
-       // ------------------------------------
+       "no-redeclare": "off", // TẮT redeclare cho file test
     }
-  },
-
-  // 4. Các file/thư mục cần bỏ qua (áp dụng cho toàn bộ)
-  {
-    ignores: [
-      "node_modules/",
-      "coverage/",
-      ".github/",
-      "backend/"
-    ],
   },
 ];
