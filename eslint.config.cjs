@@ -19,7 +19,8 @@ module.exports = [
       globals: {
         ...globals.browser, // CHỈ cần browser globals
         // Khai báo các biến global tùy chỉnh
-        ChatApp: "writable",
+        ChatContainer: "writable", // Writable because it's defined in its file
+        ChatPresenter: "writable", // Writable because it's defined in its file
         ChatHeader: "readonly",
         MessageList: "readonly",
         InputBar: "readonly",
