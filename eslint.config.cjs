@@ -87,7 +87,8 @@ module.exports = [
     ignores: [
       "node_modules/",
       "coverage/",
-      ".github/"
+      ".github/",
+      "backend/"
     ],
   },
 ];
