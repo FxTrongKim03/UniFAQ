@@ -6,8 +6,8 @@ function connectExamplesToChat() {
             const text = this.querySelector('span').textContent;
             
             // Gửi đến chat nếu chat app tồn tại
-            if (window.chatApp) {
-                window.chatApp.sendMessageFromExternal(text);
+            if (window.chatAppContainerInstance) { // <-- Sửa ở đây
+                window.chatAppContainerInstance.sendMessageFromExternal(text);
             } else {
                 // Fallback: đặt vào search bar
                 document.querySelector('.header__search-input').value = text;
@@ -22,8 +22,8 @@ function connectHeroButtonsToChat() {
     const tryButton = document.querySelector('.hero__btn--primary');
     if (tryButton) {
         tryButton.addEventListener('click', function() {
-            if (window.chatApp) {
-                window.chatApp.openChat();
+            if (window.chatAppContainerInstance) { // <-- Sửa ở đây
+                window.chatAppContainerInstance.openChat();
             }
         });
     }

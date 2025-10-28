@@ -12,45 +12,33 @@ class FAQRenderer {
     }
 
     async fetchFAQs() {
-        console.log('🔄 Starting FAQ fetch...');
+        console.log('🔄 [FAQRenderer] Starting fetch from API...');
         this.error = null;
-        this.setLoading(true); // Dòng này sẽ tự động gọi render() và hiển thị loading
-        
-        try {
-            console.log('📡 Fetching from: ./faqs.json');
-            const response = await fetch('./faqs.json');
-            console.log('📡 Response status:', response.status, response.statusText);
-            
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            
-            const data = await response.json();
-            console.log('✅ Raw data received:', data);
-            
-            if (!data || !data.faqs) {
-                throw new Error('Invalid data structure: missing "faqs" property');
-            }
-            
-            const sortedFaqs = data.faqs.sort((a, b) => b.votes - a.votes);
-            this.faqs = sortedFaqs.slice(0, 10); 
+        this.setLoading(true);
 
-            console.log(`📊 Đã sắp xếp và lọc top ${this.faqs.length} câu hỏi có vote cao nhất.`);
-            
-            if (this.faqs.length === 0) {
-                console.log('ℹ️ No FAQs found in data');
-            }
-            
-            // KHÔNG render ở đây nữa, hãy để "finally" xử lý
-            
+        try {
+            const apiUrl = 'http://localhost:3001/api/faqs'; // URL backend
+            console.log(`📡 [FAQRenderer] Fetching from: ${apiUrl}`);
+            const response = await fetch(apiUrl);
+            console.log('📡 [FAQRenderer] Response status:', response.status);
+
+            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
+            const data = await response.json();
+            console.log('✅ [FAQRenderer] Data received from API:', data);
+
+            if (!Array.isArray(data)) throw new Error('API did not return an array');
+
+            const sortedFaqs = data.sort((a, b) => b.votes - a.votes);
+            this.faqs = sortedFaqs.slice(0, 5); // Lấy top 10
+
+            console.log(`📊 [FAQRenderer] Filtered top ${this.faqs.length} FAQs from API.`);
+
         } catch (error) {
-            console.error('❌ Fetch failed:', error);
+            console.error('❌ [FAQRenderer] Fetch API failed:', error);
             this.error = error.message;
-            // KHÔNG renderError ở đây nữa
         } finally {
-            // Dòng này sẽ đặt isLoading = false VÀ gọi render() một lần nữa
-            // để hiển thị nội dung hoặc lỗi
-            this.setLoading(false); 
+            this.setLoading(false); // Sẽ gọi render()
         }
     }
 
