@@ -2,7 +2,7 @@ const js = require("@eslint/js");
 const globals = require("globals");
 
 module.exports = [
-  // Áp dụng cấu hình mặc định được khuyến nghị cho tất cả file JS
+  // Áp dụng cấu hình mặc định được khuyến nghị
   js.configs.recommended,
 
   // 1. Cấu hình cho các file chạy trên Browser (Components, Hooks, Renderer, script.js)
@@ -29,16 +29,18 @@ module.exports = [
         openChat: "readonly",
         closeChat: "readonly",
         sendToChat: "readonly",
-         // Thêm module/exports để ESLint không báo lỗi no-undef trong các file này
-         // Mặc dù chúng chạy trên browser, code này chỉ để tương thích nếu dùng ở Node
+         // Thêm module/exports để ESLint không báo lỗi no-undef
          module: "writable",
          exports: "writable"
       },
     },
     rules: {
+      // Cập nhật varsIgnorePattern để bao gồm cả hooks và các class
       "no-unused-vars": ["error", { "varsIgnorePattern": "^(openChat|closeChat|sendToChat|ChatApp|ChatHeader|MessageList|InputBar|FAQRenderer|useFaqData|useFaqSearch)$" }],
       "no-undef": "error",
-      "no-redeclare": "off", // Tắt redeclare cho các file này
+      // --- TẮT NO-REDECLARE CHO CÁC FILE NÀY ---
+      "no-redeclare": "off"
+      // -----------------------------------------
     },
   },
 
@@ -47,15 +49,16 @@ module.exports = [
     files: ["server.js"],
     languageOptions: {
       ecmaVersion: "latest",
-      sourceType: "script",
+      sourceType: "script", // Hoặc "commonjs"
       globals: {
-        ...globals.node, // CHỈ cần node globals (bao gồm require, process, console, module,...)
+        ...globals.node, // CHỈ cần node globals (bao gồm require, process, console, module, exports)
       },
     },
     rules: {
        // Giữ rules mặc định từ recommended
        "no-undef": "error",
        "no-unused-vars": "warn",
+       // Không cần tắt no-redeclare ở đây
     }
   },
 
@@ -67,9 +70,9 @@ module.exports = [
       sourceType: "script",
       globals: {
         ...globals.jest,     // Globals của Jest
-        ...globals.node,    // Globals của Node (cho require, process, global)
-        ...globals.browser, // Globals của Browser (cho document, fetch nếu cần)
-        // KHÔNG cần khai báo FAQRenderer nữa vì require('...') sẽ xử lý
+        ...globals.node,    // Globals của Node (require, process, global, module, exports)
+        ...globals.browser, // Globals của Browser (document, fetch nếu cần)
+        // KHÔNG cần khai báo FAQRenderer nữa vì require xử lý
       },
     },
     rules: {
@@ -89,6 +92,7 @@ module.exports = [
       "coverage/",
       ".github/",
       "backend/"
+      // Không cần liệt kê server.js và test.js ở đây vì đã có config riêng
     ],
   },
 ];
