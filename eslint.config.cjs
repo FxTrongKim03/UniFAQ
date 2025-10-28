@@ -2,20 +2,20 @@ const js = require("@eslint/js");
 const globals = require("globals");
 
 module.exports = [
-  // 1. Global Ignores (apply first)
+  // 1. Global Ignores
   {
     ignores: [
       "node_modules/",
       "coverage/",
       ".github/",
-      "backend/node_modules/" // Ignore backend node_modules too
+      "backend/node_modules/"
     ],
   },
 
-  // 2. Base Recommended Rules (apply to all matched files after ignores)
+  // 2. Base Recommended Rules
   js.configs.recommended,
 
-  // 3. Configuration for Browser JS files (Components, Hooks, Renderer, script.js)
+  // 3. Config for Browser JS (Components, Hooks, Renderer, script.js)
   {
     files: [
         "components/**/*.js",
@@ -27,11 +27,11 @@ module.exports = [
       ecmaVersion: "latest",
       sourceType: "script",
       globals: {
-        ...globals.browser, // Browser built-ins are primary
-        // Declare custom global classes/objects explicitly
+        ...globals.browser,
+        // Declare custom globals
         ChatContainer: "writable",
         ChatPresenter: "writable",
-        ChatHeader: "readonly",
+        ChatHeader: "readonly", // Keep these readonly if defined elsewhere
         MessageList: "readonly",
         InputBar: "readonly",
         FAQRenderer: "readonly",
@@ -40,43 +40,42 @@ module.exports = [
         openChat: "readonly",
         closeChat: "readonly",
         sendToChat: "readonly",
-        // Add module/exports for the checks at the bottom of these files
+        // Add module/exports for the compatibility checks
         module: "writable",
         exports: "writable"
       },
     },
     rules: {
-      // Allow specific unused vars (the globally defined classes/functions)
-      "no-unused-vars": ["warn", { // Changed to warn
+      // Allow specific unused vars (globally defined classes/functions) - keep as WARN
+      "no-unused-vars": ["warn", {
           "vars": "all",
-          "args": "none",
+          "args": "none", // Don't check unused arguments
           "ignoreRestSiblings": true,
           "varsIgnorePattern": "^(ChatContainer|ChatPresenter|ChatHeader|MessageList|InputBar|FAQRenderer|useFaqData|useFaqSearch|openChat|closeChat|sendToChat)$"
       }],
-      "no-undef": "error",
-      "no-redeclare": "off", // Turn off redeclare for these browser global classes
+      "no-undef": "error", // Keep checking for undefined variables
+      "no-redeclare": "off", // TURN OFF redeclare for these files
     },
   },
 
-  // 4. Configuration for Node.js server file
+  // 4. Config for Node.js server file
   {
-    files: ["server.js", "backend/server.js"], // Apply to server files
+    files: ["server.js", "backend/server.js"],
     languageOptions: {
       ecmaVersion: "latest",
-      sourceType: "script", // Or "commonjs"
+      sourceType: "script",
       globals: {
         ...globals.node, // Node.js built-ins ONLY
       },
     },
     rules: {
-       // Inherits recommended rules, add specifics if needed
        "no-unused-vars": "warn",
        "no-undef": "error",
        "no-redeclare": "error" // Keep redeclare ON for server
     }
   },
 
-  // 5. Configuration for Jest test files
+  // 5. Config for Jest test files
   {
     files: ["**/*.test.js"],
     languageOptions: {
@@ -84,17 +83,16 @@ module.exports = [
       sourceType: "script",
       globals: {
         ...globals.jest,     // Jest globals
-        ...globals.node,    // Node globals (for require, process, etc.)
-        ...globals.browser, // Browser globals (for document, etc. if needed)
-        // Declare globals defined in OTHER files but used in tests
+        ...globals.node,    // Node globals (require, process, global)
+        ...globals.browser, // Browser globals (document, fetch etc.)
+        // Declare globals defined elsewhere but needed for tests
         FAQRenderer: "readonly",
       },
     },
     rules: {
-       // Inherits recommended rules
        "no-unused-vars": "warn",
        "no-undef": "error",
-       "no-redeclare": "off", // Turn OFF redeclare also for tests involving global classes
+       "no-redeclare": "off", // TURN OFF redeclare for test files too
     }
   },
 ];

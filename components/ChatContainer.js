@@ -115,29 +115,43 @@ class ChatContainer {
     }
 
     // Logic gọi Gemini API
-    async callGeminiAPI(userMessage) {
-        if (!this.state.isLoading) this.setState({ isLoading: true }); // Đảm bảo loading bật
+    async callGeminiAPI(userMessage) { // <--- userMessage is used here
+        if (!this.state.isLoading) this.setState({ isLoading: true });
 
-        const MODEL_NAME = 'gemini-1.5-flash-latest';
+        const MODEL_NAME = 'gemini-2.5-flash';
         const API_VERSION = 'v1beta';
         const API_URL = `https://generativelanguage.googleapis.com/${API_VERSION}/models/${MODEL_NAME}:generateContent?key=${this.GEMINI_API_KEY}`;
-        const prompt = `Bạn là trợ lý ảo... (Giữ nguyên prompt)`; // Giữ nguyên prompt
-        const requestBody = { contents: [{ parts: [{ text: prompt }] }] };
+
+        // --- FIX: Include userMessage in the prompt ---
+        const prompt = `Bạn là trợ lý ảo cho một trường đại học tên là UniFAQ.
+                       Người dùng đã hỏi một câu nhưng không tìm thấy trong cơ sở dữ liệu FAQ.
+                       Hãy trả lời câu hỏi của họ một cách ngắn gọn, hữu ích.
+                       Câu hỏi của người dùng: "${userMessage}"`; // <-- Use userMessage here
+
+        const requestBody = { // <-- requestBody is used below
+            contents: [{ parts: [{ text: prompt }] }]
+        };
 
         try {
-            const response = await fetch(API_URL, { /* ... options ... */ });
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                // --- FIX: Add requestBody to the fetch body ---
+                body: JSON.stringify(requestBody), // <-- Use requestBody here
+            });
             const data = await response.json();
-            // ... (Xử lý response và lỗi như cũ) ...
-            if (!response.ok) { throw new Error(data.error?.message || `API Error ${response.status}`);}
-            if (!data.candidates?.[0]?.content?.parts?.[0]?.text) { throw new Error("AI response empty.");}
-            const geminiResponse = data.candidates[0].content.parts[0].text;
-            this.addBotMessage(geminiResponse);
+
+            // ... (rest of the try block remains the same) ...
+             if (!response.ok) { throw new Error(data.error?.message || `API Error ${response.status}`);}
+             if (!data.candidates?.[0]?.content?.parts?.[0]?.text) { throw new Error("AI response empty.");}
+             const geminiResponse = data.candidates[0].content.parts[0].text;
+             this.addBotMessage(geminiResponse);
 
         } catch (error) {
             console.error('❌ Error calling Gemini API:', error);
             this.addBotMessage("Error connecting to AI assistant. (" + error.message + ")");
         } finally {
-            this.setState({ isLoading: false }); // Luôn tắt loading
+            this.setState({ isLoading: false });
         }
     }
 
