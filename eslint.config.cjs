@@ -15,7 +15,7 @@ module.exports = [
   // 2. Base Recommended Rules
   js.configs.recommended,
 
-  // 3. Config for Browser JS (Components, Hooks, Renderer, script.js)
+  // 3. Config cho Browser JS (Components, Hooks, Renderer, script.js)
   {
     files: [
         "components/**/*.js",
@@ -28,10 +28,9 @@ module.exports = [
       sourceType: "script",
       globals: {
         ...globals.browser,
-        // Declare custom globals
         ChatContainer: "writable",
         ChatPresenter: "writable",
-        ChatHeader: "readonly", // Keep these readonly if defined elsewhere
+        ChatHeader: "readonly",
         MessageList: "readonly",
         InputBar: "readonly",
         FAQRenderer: "readonly",
@@ -40,59 +39,58 @@ module.exports = [
         openChat: "readonly",
         closeChat: "readonly",
         sendToChat: "readonly",
-        // Add module/exports for the compatibility checks
+        // Thêm module/exports để xử lý các đoạn kiểm tra typeof
         module: "writable",
         exports: "writable"
       },
     },
     rules: {
-      // Allow specific unused vars (globally defined classes/functions) - keep as WARN
+      // Giảm xuống warning và giữ ignore pattern
       "no-unused-vars": ["warn", {
           "vars": "all",
-          "args": "none", // Don't check unused arguments
+          "args": "none",
           "ignoreRestSiblings": true,
           "varsIgnorePattern": "^(ChatContainer|ChatPresenter|ChatHeader|MessageList|InputBar|FAQRenderer|useFaqData|useFaqSearch|openChat|closeChat|sendToChat)$"
       }],
-      "no-undef": "error", // Keep checking for undefined variables
-      "no-redeclare": "off", // TURN OFF redeclare for these files
+      "no-undef": "error",
+      "no-redeclare": "off", // TẮT redeclare cho các file này
     },
   },
 
-  // 4. Config for Node.js server file
+  // 4. Config cho Node.js server
   {
     files: ["server.js", "backend/server.js"],
     languageOptions: {
       ecmaVersion: "latest",
       sourceType: "script",
       globals: {
-        ...globals.node, // Node.js built-ins ONLY
+        ...globals.node, // Chỉ cần globals của Node
       },
     },
     rules: {
        "no-unused-vars": "warn",
        "no-undef": "error",
-       "no-redeclare": "error" // Keep redeclare ON for server
+       "no-redeclare": "error" // Giữ redeclare BẬT cho server
     }
   },
 
-  // 5. Config for Jest test files
+  // 5. Config cho Jest test
   {
     files: ["**/*.test.js"],
     languageOptions: {
       ecmaVersion: "latest",
       sourceType: "script",
       globals: {
-        ...globals.jest,     // Jest globals
-        ...globals.node,    // Node globals (require, process, global)
-        ...globals.browser, // Browser globals (document, fetch etc.)
-        // Declare globals defined elsewhere but needed for tests
-        FAQRenderer: "readonly",
+        ...globals.jest,
+        ...globals.node, // Cần cho require, process,... trong test
+        ...globals.browser, // Cần cho document,... trong test
+        FAQRenderer: "readonly", // Khai báo global cần cho test
       },
     },
     rules: {
        "no-unused-vars": "warn",
        "no-undef": "error",
-       "no-redeclare": "off", // TURN OFF redeclare for test files too
+       "no-redeclare": "off", // TẮT redeclare cho file test
     }
   },
 ];
