@@ -13,7 +13,7 @@ class ChatApp {
         // Key này chỉ dùng để *thử nghiệm* và sẽ bị lộ ngay lập tức.
         // Hãy tạo backend để gọi API an toàn.
         // -----------------------------------------------------------------
-        this.GEMINI_API_KEY = 'AIzaSyAPHtchMSvtKiJ4HAB8odibdBSQWU6mNsc'; // <-- LỖ HỔNG BẢO MẬT
+        this.GEMINI_API_KEY = ''; // <-- LỖ HỔNG BẢO MẬT
 
         this.isOpen = false;
         
